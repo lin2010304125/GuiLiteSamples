@@ -4,13 +4,10 @@
 class c_top_bar : public c_wnd
 {
 public:
-	static void sysinfo_timer_callback(void* ptmr, void* parg);
+	static void sysinfo_timer_callback(void* param);
 protected:
-	c_wnd* clone(){return new c_top_bar();}
 	virtual void on_init_children(void);
 	virtual void on_paint(void);
-	void on_refurbish_time(unsigned int wParam, unsigned int lParam);
-	GL_DECLARE_MESSAGE_MAP()
 };
 
 #endif

@@ -1,8 +1,4 @@
-#include "../core_include/api.h"
-#include "../core_include/rect.h"
-#include "../core_include/cmd_target.h"
-#include "../core_include/wnd.h"
-#include "../widgets_include/label.h"
+#include "../include/GuiLite.h"
 #include "../source/ui_ctrl_ex/value_view.h"
 #include "../source/ui_ctrl_ex/value_ctrl.h"
 #include "../include/ctrl_id.h"
@@ -16,7 +12,7 @@ void c_spo2_value_view::on_init_children(void)
 	//Register param ctrl.
 	c_value_ctrl *p_value_spo2 = (c_value_ctrl*)get_wnd_ptr(ID_SPO2_VIEW_SPO2_VALUE);
 	c_value_ctrl *p_value_pr = (c_value_ctrl*)get_wnd_ptr(ID_SPO2_VIEW_PR_VALUE);
-	if (p_value_spo2 == NULL || p_value_pr == NULL)
+	if (p_value_spo2 == 0 || p_value_pr == 0)
 	{
 	    ASSERT(false);
 		return;

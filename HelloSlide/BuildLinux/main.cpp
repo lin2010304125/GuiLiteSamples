@@ -5,7 +5,6 @@
 #include <sys/ioctl.h>
 #include <sys/shm.h>
 #include <unistd.h>
-#include <execinfo.h>
 #include <sys/mman.h>
 #include <linux/fb.h>
 #include <errno.h>
@@ -18,22 +17,17 @@ static void* get_embeded_fb_in_display_app(int shared_id);
 static void* get_dev_fb(char* path, int &width, int &height, int &color_bytes);
 
 static const char* s_welcome =
-"-------------------------------------------------------------------\n"
-"*  GuiLite Sample code [Version 1.6]                              *\n"
-"*  Any feedback will be appreciated. Email: idea4good@outlook.com *\n"
-"-------------------------------------------------------------------\n"
-"How to run inside QT APP?\n"
-"If x64: ./display-x64 | ./HelloSlide shared-fb\n"
-"If ARM: ./display-arm | ./HelloSlide shared-fb\n\n"
+"--------------------------- Help ---------------------------\n"
+"Run on Linux Desktop:\n"
+"./xWindow 512 768 | ./HelloSlide shared-fb\n\n"
 
-"How to run on Linux?\n"
-"Type command: ./HelloSlide /dev/fb-path\n\n"
-"-------------------- Help ------------------------\n"
+"Run on ARM Linux:\n"
+"./HelloSlide /dev/fb-path\n\n"
+
 "ss: 	Save UI in snapshot.bmp.\n"
 "aa: 	Left slide.\n"
 "dd:    Right slide.\n"
-"exit: 	Exit the App.\n"
-"--------------------------------------------------\n";
+"------------------------------------------------------------\n";
 
 enum FRAMEBUFFER_MODE
 {
@@ -46,7 +40,7 @@ int main(int argc, char** argv)
 {
 	printf(s_welcome);
 	system("chmod 777 .sync_build.sh");
-	system("./.sync_build.sh HelloSlide");
+	system("./.sync_build.sh HelloSlide &");
 
 	int color_bytes = 2;
 	int screen_width = 512;
@@ -106,11 +100,11 @@ static void* get_embeded_fb_in_display_app(int shared_id)
 			{
 				break;
 			}
-			printf("shmat failed! run display app first.\n");
+			perror("shmat failed! run display app first.\n");
 		}
 		else
 		{
-			printf("shmget failed! run display app first\n");
+			perror("shmget failed! run display app first\n");
 		}
 		sleep(1);
 	}
@@ -122,14 +116,14 @@ static void* get_dev_fb(char* path, int &width, int &height, int &color_bytes)
 	int fd = open (path, O_RDWR);
 	if(0 > fd)
 	{
-		printf("%s, open fb failed!\n", path);
+		perror("open fb failed!\n");
 		_exit(-1);
 	}
 
 	struct fb_var_screeninfo vinfo;
 	if (0 > ioctl(fd, FBIOGET_VSCREENINFO, &vinfo))
 	{
-		printf("get fb info failed!\n");
+		perror("get fb info failed!\n");
 		_exit(-1);
     }
 
@@ -147,7 +141,7 @@ static void* get_dev_fb(char* path, int &width, int &height, int &color_bytes)
 	void* fbp = mmap(0, (vinfo.xres * vinfo.yres * color_bytes), PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
 	if(0 > fbp)
 	{
-		printf("mmap fb failed!\n");  
+		perror("mmap fb failed!\n");  
 		_exit(-1);
 	}
 	memset(fbp, 0, (vinfo.xres * vinfo.yres * color_bytes));

@@ -1,17 +1,5 @@
-﻿#include "core_include/api.h"
-#include "core_include/rect.h"
-#include "core_include/cmd_target.h"
-#include "core_include/wnd.h"
-#include "core_include/surface.h"
-#include "core_include/resource.h"
-#include "core_include/bitmap.h"
-#include "core_include/word.h"
-#include "core_include/msg.h"
-#include "core_include/display.h"
-#include "core_include/theme.h"
-#include "widgets_include/button.h"
-#include "widgets_include/slide_group.h"
-#include "widgets_include/gesture.h"
+﻿#define GUILITE_ON  //Do not define this macro once more!!!
+#include "GuiLite.h"
 #include <stdlib.h>
 #include <string.h>
 
@@ -31,7 +19,6 @@ enum WND_ID
 
 class c_page : public c_wnd
 {
-	virtual c_wnd* clone() { return new c_page(); }
 	virtual void on_paint();
 };
 
@@ -40,27 +27,27 @@ void c_page::on_paint()
 	c_rect rect;
 	get_screen_rect(rect);
 	const BITMAP_INFO* bmp = NULL;
-	switch (m_resource_id)
+	switch (m_id)
 	{
 	case ID_PAGE1:
-		bmp = c_theme::get_bmp(BITMAP_CUSTOM1);
+		bmp = (const BITMAP_INFO*)c_theme::get_image(IMAGE_CUSTOM1);
 		break;
 	case ID_PAGE2:
-		bmp = c_theme::get_bmp(BITMAP_CUSTOM2);
+		bmp = (const BITMAP_INFO*)c_theme::get_image(IMAGE_CUSTOM2);
 		break;
 	case ID_PAGE3:
-		bmp = c_theme::get_bmp(BITMAP_CUSTOM3);
+		bmp = (const BITMAP_INFO*)c_theme::get_image(IMAGE_CUSTOM3);
 		break;
 	case ID_PAGE4:
-		bmp = c_theme::get_bmp(BITMAP_CUSTOM4);
+		bmp = (const BITMAP_INFO*)c_theme::get_image(IMAGE_CUSTOM4);
 		break;
 	case ID_PAGE5:
-		bmp = c_theme::get_bmp(BITMAP_CUSTOM5);
+		bmp = (const BITMAP_INFO*)c_theme::get_image(IMAGE_CUSTOM5);
 		break;
 	default:
 		break;
 	}
-	c_bitmap::draw_bitmap(m_surface, m_z_order, bmp, rect.m_left, rect.m_top);
+	c_image::draw_image(m_surface, m_z_order, bmp, rect.m_left, rect.m_top);
 }
 
 //////////////////////// layout UI ////////////////////////
@@ -73,22 +60,21 @@ static WND_TREE s_root_children[] =
 
 //////////////////////// start UI ////////////////////////
 extern const BITMAP_INFO ten_bmp, jack_bmp, queen_bmp, king_bmp, ace_bmp;
-static c_fifo s_hid_fifo;
 static c_display* s_display;
 void load_resource()
 {
-	c_theme::add_bitmap(BITMAP_CUSTOM1, &ten_bmp);
-	c_theme::add_bitmap(BITMAP_CUSTOM2, &jack_bmp);
-	c_theme::add_bitmap(BITMAP_CUSTOM3, &queen_bmp);
-	c_theme::add_bitmap(BITMAP_CUSTOM4, &king_bmp);
-	c_theme::add_bitmap(BITMAP_CUSTOM5, &ace_bmp);
+	c_theme::add_image(IMAGE_CUSTOM1, &ten_bmp);
+	c_theme::add_image(IMAGE_CUSTOM2, &jack_bmp);
+	c_theme::add_image(IMAGE_CUSTOM3, &queen_bmp);
+	c_theme::add_image(IMAGE_CUSTOM4, &king_bmp);
+	c_theme::add_image(IMAGE_CUSTOM5, &ace_bmp);
 }
 
 void create_ui(void* phy_fb, int screen_width, int screen_height, int color_bytes)
 {
 	load_resource();
 	s_display = new c_display(phy_fb, screen_width, screen_height, UI_WIDTH, UI_HEIGHT, color_bytes, (1 + 5)/*1 root + 5 pages*/);
-	c_surface* surface = s_display->alloc_surface(&s_root, Z_ORDER_LEVEL_1);
+	c_surface* surface = s_display->alloc_surface(Z_ORDER_LEVEL_1);
 	surface->set_active(true);
 
 	s_root.set_surface(surface);
@@ -102,7 +88,6 @@ void create_ui(void* phy_fb, int screen_width, int screen_height, int color_byte
 	s_root.set_active_slide(0);
 	s_root.show_window();
 
-	new c_gesture(&s_root, &s_root, &s_hid_fifo);
 	while(1)
 	{
 		thread_sleep(1000000);
@@ -115,10 +100,9 @@ void startHelloSlide(void* phy_fb, int width, int height, int color_bytes)
 	create_ui(phy_fb, width, height, color_bytes);
 }
 
-int sendTouch2HelloSlide(void* buf, int len)
+void sendTouch2HelloSlide(int x, int y, bool is_down)
 {
-	ASSERT(len == sizeof(MSG_INFO));
-	return s_hid_fifo.write(buf, len);
+	is_down ? s_root.on_touch(x, y, TOUCH_DOWN) : s_root.on_touch(x, y, TOUCH_UP);
 }
 
 void* getUiOfHelloSlide(int* width, int* height, bool force_update)

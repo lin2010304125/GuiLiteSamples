@@ -1,12 +1,4 @@
-#include "../core_include/api.h"
-#include "../core_include/rect.h"
-#include "../core_include/cmd_target.h"
-#include "../core_include/wnd.h"
-#include "../core_include/surface.h"
-#include "../core_include/resource.h"
-#include "../core_include/word.h"
-#include "../widgets_include/button.h"
-#include "../core_include/theme.h"
+#include "../include/GuiLite.h"
 #include <stdio.h>
 #include "time_bar.h"
 
@@ -23,13 +15,6 @@
 #define	ID_FORWARD_BTN			3
 #define	ID_FAST_FORWARD_BTN		4
 
-GL_BEGIN_MESSAGE_MAP(c_time_bar)
-ON_GL_BN_CLICKED(ID_BACKWARD_BTN, c_time_bar::on_btn_click)
-ON_GL_BN_CLICKED(ID_FAST_BACKWARD_BTN, c_time_bar::on_btn_click)
-ON_GL_BN_CLICKED(ID_FORWARD_BTN, c_time_bar::on_btn_click)
-ON_GL_BN_CLICKED(ID_FAST_FORWARD_BTN, c_time_bar::on_btn_click)
-GL_END_MESSAGE_MAP()
-
 void c_time_bar::on_init_children()
 {
 	set_time(get_time_in_second());
@@ -37,10 +22,15 @@ void c_time_bar::on_init_children()
 
 	c_rect rect;
 	get_screen_rect(rect);
-	m_fast_backward.connect(this, ID_FAST_BACKWARD_BTN, "<<", 0, 0, BUTTON_LENGTH, rect.Height());
-	m_backward.connect(this, ID_BACKWARD_BTN, "<", (BUTTON_LENGTH + 1), 0, BUTTON_LENGTH, rect.Height());
-	m_forward.connect(this, ID_FORWARD_BTN, ">", (rect.Width() - 2 * BUTTON_LENGTH - 6), 0, BUTTON_LENGTH, rect.Height());
-	m_fast_forward.connect(this, ID_FAST_FORWARD_BTN, ">>", (rect.Width() - BUTTON_LENGTH - 5), 0, BUTTON_LENGTH, rect.Height());
+	m_fast_backward.connect(this, ID_FAST_BACKWARD_BTN, "<<", 0, 0, BUTTON_LENGTH, rect.height());
+	m_backward.connect(this, ID_BACKWARD_BTN, "<", (BUTTON_LENGTH + 1), 0, BUTTON_LENGTH, rect.height());
+	m_forward.connect(this, ID_FORWARD_BTN, ">", (rect.width() - 2 * BUTTON_LENGTH - 6), 0, BUTTON_LENGTH, rect.height());
+	m_fast_forward.connect(this, ID_FAST_FORWARD_BTN, ">>", (rect.width() - BUTTON_LENGTH - 5), 0, BUTTON_LENGTH, rect.height());
+
+	((c_button*)get_wnd_ptr(ID_FAST_BACKWARD_BTN))->set_on_click((WND_CALLBACK)&c_time_bar::on_btn_click);
+	((c_button*)get_wnd_ptr(ID_BACKWARD_BTN))->set_on_click((WND_CALLBACK)&c_time_bar::on_btn_click);
+	((c_button*)get_wnd_ptr(ID_FORWARD_BTN))->set_on_click((WND_CALLBACK)&c_time_bar::on_btn_click);
+	((c_button*)get_wnd_ptr(ID_FAST_FORWARD_BTN))->set_on_click((WND_CALLBACK)&c_time_bar::on_btn_click);
 }
 
 void c_time_bar::on_paint(void)
@@ -54,15 +44,15 @@ void c_time_bar::on_paint(void)
 
 void c_time_bar::set_time(long time)
 {
-	set_scale_bar_atrrs((time - ((TIME_MARK_CNT - 1) * 60)), time, GL_RGB(255, 255, 255), c_theme::get_font(FONT_DEFAULT));
+	set_scale_bar_atrrs((time - ((TIME_MARK_CNT - 1) * 60)), time, GL_RGB(255, 255, 255), (const LATTICE_FONT_INFO*)c_theme::get_font(FONT_DEFAULT));
 	draw_mark();
 }
 
-int c_time_bar::set_scale_bar_atrrs(long start_time, long end_time, unsigned int color, const FONT_INFO* font)
+int c_time_bar::set_scale_bar_atrrs(long start_time, long end_time, unsigned int color, const LATTICE_FONT_INFO* font)
 {
 	if ( !font ||  end_time <= start_time)
 	{
-		ASSERT(FALSE);
+		ASSERT(false);
 		return -1;
 	}
 	m_end_seconds = end_time;
@@ -77,7 +67,7 @@ unsigned int c_time_bar::time_2_pos_x(int time_seconds)
 {
 	if ( time_seconds > m_end_seconds || time_seconds < m_start_seconds )
 	{
-		ASSERT(FALSE);
+		ASSERT(false);
 		return -1;
 	}
 	c_rect rect;
@@ -103,7 +93,7 @@ void c_time_bar::draw_scale()
 {
 	if (m_end_seconds <= m_start_seconds)
 	{
-		ASSERT(FALSE);
+		ASSERT(false);
 	}
 
 	c_rect rect;
@@ -139,7 +129,7 @@ void c_time_bar::draw_mark()
 {
 	if (m_end_seconds <= m_start_seconds)
 	{
-		ASSERT(FALSE);
+		ASSERT(false);
 	}
 
 	c_rect rect;
@@ -155,7 +145,7 @@ void c_time_bar::draw_mark()
 	}
 }
 
-void c_time_bar::on_btn_click(unsigned int ctrl_id)
+void c_time_bar::on_btn_click(int ctrl_id, int param)
 {
 	int increment;
 	switch ( ctrl_id )
@@ -173,11 +163,10 @@ void c_time_bar::on_btn_click(unsigned int ctrl_id)
 		increment = ( m_end_seconds - m_start_seconds );
 		break;
 	default:
-		ASSERT(FALSE);
+		ASSERT(false);
 		return;
 	}
 	m_end_seconds += increment;
 	m_start_seconds += increment;
 	draw_mark();
-	notify_parent(ND_SCALE_CLICKED, get_id(), 0);
 }

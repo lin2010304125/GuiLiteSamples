@@ -1,17 +1,5 @@
-﻿#include "core_include/api.h"
-#include "core_include/rect.h"
-#include "core_include/cmd_target.h"
-#include "core_include/wnd.h"
-#include "core_include/surface.h"
-#include "core_include/resource.h"
-#include "core_include/bitmap.h"
-#include "core_include/word.h"
-#include "core_include/msg.h"
-#include "core_include/display.h"
-#include "core_include/theme.h"
-#include "widgets_include/wave_ctrl.h"
-#include "widgets_include/wave_buffer.h"
-#include "widgets_include/button.h"
+#define GUILITE_ON  //Do not define this macro once more!!!
+#include "GuiLite.h"
 #include <stdlib.h>
 #include <string.h>
 
@@ -57,8 +45,9 @@ enum WND_ID
 
 class c_myUI : public c_wnd
 {
-	virtual c_wnd* clone() { return new c_myUI(); }
 	virtual void on_init_children(void) {
+		((c_button*)get_wnd_ptr(ID_BUTTON))->set_on_click((WND_CALLBACK)&c_myUI::on_clicked);
+
 		c_wave_ctrl *p_wave = (c_wave_ctrl*)get_wnd_ptr(ID_WAVE1);
 		p_wave->set_wave_speed(1);
 		p_wave->set_wave_color(GL_RGB(0, 255, 0));
@@ -86,7 +75,7 @@ class c_myUI : public c_wnd
 		get_screen_rect(rect);
 		m_surface->fill_rect(rect, GL_RGB(33, 33, 33), m_z_order);
 	}
-	void on_clicked(unsigned int ctrl_id) {
+	void on_clicked(int ctrl_id, int param) {
 		static int index;
 		c_rect rect;
 		get_screen_rect(rect);
@@ -109,13 +98,7 @@ public:
 	c_wave_buffer m_wave_buffer1;
 	c_wave_buffer m_wave_buffer2;
 	c_wave_buffer m_wave_buffer3;
-	GL_DECLARE_MESSAGE_MAP()//delcare message
 };
-
-//map message
-GL_BEGIN_MESSAGE_MAP(c_myUI)
-ON_GL_BN_CLICKED(ID_BUTTON, c_myUI::on_clicked)
-GL_END_MESSAGE_MAP()
 
 //////////////////////// layout UI ////////////////////////
 static c_myUI s_myUI;
@@ -133,7 +116,7 @@ static WND_TREE s_myUI_children[] =
 };
 
 //////////////////////// start UI ////////////////////////
-extern const FONT_INFO Lucida_Console_27;
+extern const LATTICE_FONT_INFO Lucida_Console_27;
 void load_resource()
 {
 	c_theme::add_font(FONT_DEFAULT, &Lucida_Console_27);
@@ -146,13 +129,27 @@ void load_resource()
 }
 
 static c_display* s_display;
+static c_surface* s_surface;
 void create_ui(void* phy_fb, int screen_width, int screen_height, int color_bytes, struct EXTERNAL_GFX_OP* gfx_op)
 {
 	load_resource();
-	s_display = new c_display(phy_fb, screen_width, screen_height, UI_WIDTH, UI_HEIGHT, color_bytes, 1, gfx_op);
-	c_surface* surface = s_display->alloc_surface(&s_myUI, Z_ORDER_LEVEL_0);
-	surface->set_active(true);
-	s_myUI.set_surface(surface);
+	
+	if (phy_fb)
+	{
+		static c_surface surface(UI_WIDTH, UI_HEIGHT, color_bytes, Z_ORDER_LEVEL_0);
+		static c_display display(phy_fb, screen_width, screen_height, &surface);
+		s_surface = &surface;
+		s_display = &display;
+	}
+	else
+	{//for MCU without framebuffer
+		static c_surface_no_fb surface_no_fb(UI_WIDTH, UI_HEIGHT, color_bytes, gfx_op, Z_ORDER_LEVEL_0);
+		static c_display display(phy_fb, screen_width, screen_height, &surface_no_fb);
+		s_surface = &surface_no_fb;
+		s_display = &display;
+	}
+
+	s_myUI.set_surface(s_surface);
 	s_myUI.connect(NULL, ID_ROOT, 0, 0, 0, UI_WIDTH, UI_HEIGHT, s_myUI_children);
 	s_myUI.show_window();
 
@@ -161,12 +158,12 @@ void create_ui(void* phy_fb, int screen_width, int screen_height, int color_byte
 	unsigned int wave_index = 0;
 	while(1)
 	{
-		s_myUI.m_wave_buffer1.write_wave_data(s_wave_data1[data_index1++%sizeof(s_wave_data1)]);
+		s_myUI.m_wave_buffer1.write_wave_data(s_wave_data1[data_index1++ % sizeof(s_wave_data1)]);
 		s_myUI.m_wave_buffer1.write_wave_data(s_wave_data1[data_index1++ % sizeof(s_wave_data1)]);
 		s_myUI.m_wave_buffer1.write_wave_data(s_wave_data1[data_index1++ % sizeof(s_wave_data1)]);
 		s_myUI.m_wave_buffer1.write_wave_data(s_wave_data1[data_index1++ % sizeof(s_wave_data1)]);
 
-		s_myUI.m_wave_buffer2.write_wave_data(s_wave_data2[data_index2++%sizeof(s_wave_data2)]);
+		s_myUI.m_wave_buffer2.write_wave_data(s_wave_data2[data_index2++ % sizeof(s_wave_data2)]);
 		
 		s_myUI.m_wave_buffer3.write_wave_data(s_wave_data3[data_index3++ % sizeof(s_wave_data3)]);
 		s_myUI.m_wave_buffer3.write_wave_data(s_wave_data3[data_index3++ % sizeof(s_wave_data3)]);
@@ -182,6 +179,11 @@ void create_ui(void* phy_fb, int screen_width, int screen_height, int color_byte
 extern "C" void startHelloWave(void* phy_fb, int width, int height, int color_bytes, struct EXTERNAL_GFX_OP* gfx_op)
 {
 	create_ui(phy_fb, width, height, color_bytes, gfx_op);
+}
+
+extern "C" void* getUiOfHelloWave(int* width, int* height, bool force_update)
+{
+    return s_display->get_updated_fb(width, height, false);
 }
 
 void sendTouch2HelloWave(int x, int y, bool is_down)

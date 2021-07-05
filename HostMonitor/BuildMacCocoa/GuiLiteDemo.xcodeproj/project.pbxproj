@@ -11,11 +11,9 @@
 		F47C125F1FEBDD3F005D635A /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F47C125E1FEBDD3F005D635A /* ViewController.swift */; };
 		F47C12611FEBDD3F005D635A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F47C12601FEBDD3F005D635A /* Assets.xcassets */; };
 		F47C12641FEBDD3F005D635A /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F47C12621FEBDD3F005D635A /* Main.storyboard */; };
-		F47C126D1FEBDD84005D635A /* NativeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F47C126C1FEBDD84005D635A /* NativeView.swift */; };
+		F47C126D1FEBDD84005D635A /* GuiLiteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F47C126C1FEBDD84005D635A /* GuiLiteView.swift */; };
 		F47C126F1FEBDDFD005D635A /* NativeView.xib in Resources */ = {isa = PBXBuildFile; fileRef = F47C126E1FEBDDFD005D635A /* NativeView.xib */; };
 		F4E9B0081FF239CD006CD49F /* native.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F4E9B0061FF239CD006CD49F /* native.cpp */; };
-		F4E9B00B1FF23AF1006CD49F /* libcore.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F4E9B00A1FF23AF1006CD49F /* libcore.a */; };
-		F4E9B00D1FF23AFC006CD49F /* libgui.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F4E9B00C1FF23AFC006CD49F /* libgui.a */; };
 		F4E9B00F1FF23B07006CD49F /* libUIcode.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F4E9B00E1FF23B07006CD49F /* libUIcode.a */; };
 /* End PBXBuildFile section */
 
@@ -27,13 +25,10 @@
 		F47C12631FEBDD3F005D635A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		F47C12651FEBDD3F005D635A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		F47C12661FEBDD3F005D635A /* GuiLiteDemo.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = GuiLiteDemo.entitlements; sourceTree = "<group>"; };
-		F47C126C1FEBDD84005D635A /* NativeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NativeView.swift; sourceTree = "<group>"; };
+		F47C126C1FEBDD84005D635A /* GuiLiteView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuiLiteView.swift; sourceTree = "<group>"; };
 		F47C126E1FEBDDFD005D635A /* NativeView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = NativeView.xib; sourceTree = "<group>"; };
 		F4E9B0051FF239CD006CD49F /* GuiLiteDemo-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "GuiLiteDemo-Bridging-Header.h"; sourceTree = "<group>"; };
 		F4E9B0061FF239CD006CD49F /* native.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = native.cpp; sourceTree = "<group>"; };
-		F4E9B0071FF239CD006CD49F /* native.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = native.hpp; sourceTree = "<group>"; };
-		F4E9B00A1FF23AF1006CD49F /* libcore.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libcore.a; path = GuiLiteDemo/libs/libcore.a; sourceTree = "<group>"; };
-		F4E9B00C1FF23AFC006CD49F /* libgui.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libgui.a; path = GuiLiteDemo/libs/libgui.a; sourceTree = "<group>"; };
 		F4E9B00E1FF23B07006CD49F /* libUIcode.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libUIcode.a; path = GuiLiteDemo/libs/libUIcode.a; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -43,8 +38,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				F4E9B00F1FF23B07006CD49F /* libUIcode.a in Frameworks */,
-				F4E9B00D1FF23AFC006CD49F /* libgui.a in Frameworks */,
-				F4E9B00B1FF23AF1006CD49F /* libcore.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -77,10 +70,9 @@
 				F47C12621FEBDD3F005D635A /* Main.storyboard */,
 				F47C12651FEBDD3F005D635A /* Info.plist */,
 				F47C12661FEBDD3F005D635A /* GuiLiteDemo.entitlements */,
-				F47C126C1FEBDD84005D635A /* NativeView.swift */,
+				F47C126C1FEBDD84005D635A /* GuiLiteView.swift */,
 				F47C126E1FEBDDFD005D635A /* NativeView.xib */,
 				F4E9B0061FF239CD006CD49F /* native.cpp */,
-				F4E9B0071FF239CD006CD49F /* native.hpp */,
 				F4E9B0051FF239CD006CD49F /* GuiLiteDemo-Bridging-Header.h */,
 			);
 			path = GuiLiteDemo;
@@ -90,8 +82,6 @@
 			isa = PBXGroup;
 			children = (
 				F4E9B00E1FF23B07006CD49F /* libUIcode.a */,
-				F4E9B00C1FF23AFC006CD49F /* libgui.a */,
-				F4E9B00A1FF23AF1006CD49F /* libcore.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -123,7 +113,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0920;
-				LastUpgradeCheck = 0920;
+				LastUpgradeCheck = 1020;
 				TargetAttributes = {
 					F47C12581FEBDD3F005D635A = {
 						CreatedOnToolsVersion = 9.2;
@@ -171,7 +161,7 @@
 				F47C125F1FEBDD3F005D635A /* ViewController.swift in Sources */,
 				F47C125D1FEBDD3F005D635A /* AppDelegate.swift in Sources */,
 				F4E9B0081FF239CD006CD49F /* native.cpp in Sources */,
-				F47C126D1FEBDD84005D635A /* NativeView.swift in Sources */,
+				F47C126D1FEBDD84005D635A /* GuiLiteView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -203,6 +193,7 @@
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
@@ -210,6 +201,7 @@
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
@@ -260,6 +252,7 @@
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
@@ -267,6 +260,7 @@
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
@@ -313,7 +307,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "GuiLiteDemo/GuiLiteDemo-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 3.0;
+				SWIFT_VERSION = 5.0;
 			};
 			name = Debug;
 		};
@@ -334,7 +328,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = idea4good.GuiLiteDemo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "GuiLiteDemo/GuiLiteDemo-Bridging-Header.h";
-				SWIFT_VERSION = 3.0;
+				SWIFT_VERSION = 5.0;
 			};
 			name = Release;
 		};

@@ -1,41 +1,26 @@
-#include "native.hpp"
+#include "GuiLiteDemo-Bridging-Header.h"
+#include <stdlib.h>
 
-typedef struct {
-    unsigned int dwMsgId;
-    unsigned int dwParam1;
-    unsigned int dwParam2;
-}OUTMSGINFO;
+extern void startHostMonitor(void* phy_fb, int screen_width, int screen_height, int color_bytes);
+extern void sendTouch2HostMonitor(int x, int y, bool is_down);
+extern void* getUiOfHostMonitor(int* width, int* height, bool force_update);
 
-extern int startHostMonitor(int main_cnt, int main_width, int main_height,
-               int sub_cnt, int sub_width, int sub_height,
-               int color_bytes);
-extern int sendTouch2HostMonitor(void* buf, int len, int display_id);
-extern void* getUiOfHostMonitor(int display_id, int* width, int* height, bool force_update);
-
-void run_host_monitor()
+void _startHostMonitor(int width, int height, int colorBytes)
 {
-    startHostMonitor(1, 1024, 768, 0, 1024, 370, 2);
+    startHostMonitor(calloc(width * height, colorBytes), width, height, colorBytes);
 }
 
-void* get_frame_buffer(int display_id, int* width, int* height)
+void* _getUiOfHostMonitor()
 {
-    return getUiOfHostMonitor(display_id, width, height, false);
+    return getUiOfHostMonitor(0, 0, false);
 }
 
 void mouse_down(int x, int y)
 {
-    OUTMSGINFO msg;
-    msg.dwMsgId = 0x4700;
-    msg.dwParam1 = x;
-    msg.dwParam2 = y;
-    sendTouch2HostMonitor(&msg, sizeof(msg), 0);
+    sendTouch2HostMonitor(x, y, true);
 }
 
 void mouse_up(int x, int y)
 {
-    OUTMSGINFO msg;
-    msg.dwMsgId = 0x4600;
-    msg.dwParam1 = x;
-    msg.dwParam2 = y;
-    sendTouch2HostMonitor(&msg, sizeof(msg), 0);
+    sendTouch2HostMonitor(x, y, false);
 }

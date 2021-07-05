@@ -1,31 +1,25 @@
 #ifndef _SCALE_BAR_H_
 #define _SCALE_BAR_H_
 
-#include "button.h"
-
-#define ND_SCALE_CLICKED							0x2013
-
-#define ON_ND_SACLE_CLICKED(ctrlId, func)           \
-{MSG_TYPE_WND, ND_SCALE_CLICKED, (c_cmd_target*)ctrlId, MSG_CALLBACK_VWV, (MsgFuncVV)(static_cast<void (c_cmd_target::*)(unsigned int)>(&func))},
+#include "GuiLite.h"
 
 class c_time_bar : public c_wnd
 {
 public:
-	virtual c_wnd* clone(){return new c_time_bar();}
 	virtual void on_init_children();
 	virtual void on_paint(void);
 	void set_time(long time);//time unit: second
 	long get_start_time(){return m_start_seconds;}
 	long get_end_time(){return m_end_seconds;}	
 private:
-	int set_scale_bar_atrrs(long start_time, long end_time, unsigned int color, const FONT_INFO* font);//time unit: second
+	int set_scale_bar_atrrs(long start_time, long end_time, unsigned int color, const LATTICE_FONT_INFO* font);//time unit: second
 	void draw_scale();
 	void draw_mark();
 	unsigned int time_2_pos_x(int time_minute);
-	void on_btn_click(unsigned int ctrl_id);
+	void on_btn_click(int ctrl_id, int param);
 private:
 	unsigned int m_scale_color;
-	const FONT_INFO* m_mark_font;
+	const LATTICE_FONT_INFO* m_mark_font;
 	
 	long m_end_seconds;
 	long m_start_seconds;
@@ -35,7 +29,6 @@ private:
 	c_button m_fast_backward;
 	c_button m_forward;
 	c_button m_fast_forward;
-	GL_DECLARE_MESSAGE_MAP()
 };
 
 #endif

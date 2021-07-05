@@ -1,4 +1,4 @@
-#include "../core_include/resource.h"
+#include "../GuiLite.h"
 
 static const unsigned short raw_data[] = {
     65535, 65535, 65535, 65535, 65535, 65535, 65535, 63936, 63936, 63936, 63936, 63936, 65535, 65535, 65535, 65535, 
@@ -37,5 +37,5 @@ const BITMAP_INFO step3_bmp ={
     16,
     30,
     16,
-    (unsigned char*)raw_data
+    raw_data
 };

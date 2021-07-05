@@ -1,10 +1,4 @@
-#include "../core_include/api.h"
-#include "../core_include/rect.h"
-#include "../core_include/cmd_target.h"
-#include "../core_include/wnd.h"
-#include "../core_include/surface.h"
-#include "../core_include/resource.h"
-#include "../core_include/word.h"
+#include "../include/GuiLite.h"
 #include "../source/manager/value_manager.h"
 #include "value_ctrl.h"
 #include <string.h>
@@ -15,7 +9,7 @@ c_value_ctrl::c_value_ctrl()
 	m_name_str = m_unit_str = 0;
 	m_high_limit = m_low_limit = 0;
 	m_value_dot_position = m_limit_dot_position = 0;
-	m_value = XXX;
+	m_value = 0;
 	m_value_align_type = ALIGN_LEFT | ALIGN_VCENTER;
 	memset(m_value_in_str, 0, sizeof(m_value_in_str));
 }
@@ -31,7 +25,7 @@ void c_value_ctrl::refresh_value(short value, unsigned short dot_position, bool 
 		c_word::draw_string_in_rect(m_surface, m_z_order, m_value_in_str, m_value_rect, m_value_font_type, m_bg_color, GL_ARGB(0, 0, 0, 0), m_value_align_type);
 		
 		memset(m_value_in_str, 0, sizeof(m_value_in_str));
-		c_word::value_2_string(value, dot_position, m_value_in_str, sizeof(m_value_in_str));
+		value_2_string(value, dot_position, m_value_in_str, sizeof(m_value_in_str));
 		if (flash_color)
 		{
 			c_word::draw_string_in_rect(m_surface, m_z_order, m_value_in_str, m_value_rect, m_value_font_type, m_bg_color, flash_color, m_value_align_type);
@@ -49,7 +43,7 @@ void c_value_ctrl::refresh_value(short value, unsigned short dot_position, bool 
 		c_word::draw_string_in_rect(m_surface, m_z_order, m_value_in_str, m_value_rect, m_value_font_type, m_bg_color, GL_ARGB(0, 0, 0, 0), m_value_align_type);
 		
 		memset(m_value_in_str, 0, sizeof(m_value_in_str));
-		c_word::value_2_string(value, dot_position, m_value_in_str, sizeof(m_value_in_str));
+		value_2_string(value, dot_position, m_value_in_str, sizeof(m_value_in_str));
 		c_word::draw_string_in_rect(m_surface, m_z_order, m_value_in_str, m_value_rect, m_value_font_type, m_name_color, m_bg_color, m_value_align_type);
 	}
 EXIT:
@@ -59,7 +53,7 @@ EXIT:
 
 void c_value_ctrl::pre_create_wnd()
 {
-	m_style = GL_ATTR_VISIBLE;
+	m_attr = (WND_ATTRIBUTION)(ATTR_VISIBLE | ATTR_VALUE);
 	m_bg_color = GL_RGB(0,0,0);
 }
 
@@ -86,29 +80,21 @@ void c_value_ctrl::on_paint(void)
 	m_limit_rect.m_top =  rect.m_bottom - height*0.05 - 2.0 * (m_limit_font_type->height);
 	m_limit_rect.m_right = rect.m_left + width*0.25;		
 	m_limit_rect.m_bottom = m_limit_rect.m_top + (m_limit_font_type->height);
-	int temp_high_limit_bottom = m_limit_rect.m_bottom;
-	if (m_high_limit != XXX)
-	{
-		c_word::value_2_string(m_high_limit, m_limit_dot_position, limit, sizeof(limit));
-		c_word::draw_string_in_rect(m_surface, m_z_order, limit, m_limit_rect, m_limit_font_type, m_limit_color, m_bg_color, m_value_align_type);
-	}
+	c_word::draw_value_in_rect(m_surface, m_z_order, m_high_limit, m_limit_dot_position, m_limit_rect, m_limit_font_type, m_limit_color, m_bg_color, m_value_align_type);
+
 
 	//show low limit
 	m_limit_rect.m_left = rect.m_left + 1;
 	m_limit_rect.m_top = rect.m_bottom - height*0.05 - (m_limit_font_type->height);
 	m_limit_rect.m_right = rect.m_left + width*0.25;
 	m_limit_rect.m_bottom = m_limit_rect.m_top + (m_limit_font_type->height);
-	if (m_low_limit != XXX)
-	{
-		c_word::value_2_string(m_low_limit, m_limit_dot_position, limit, sizeof(limit));
-		c_word::draw_string_in_rect(m_surface, m_z_order, limit, m_limit_rect, m_limit_font_type, m_limit_color, m_bg_color, m_value_align_type);
-	}
+	c_word::draw_value_in_rect(m_surface, m_z_order, m_low_limit, m_limit_dot_position, m_limit_rect, m_limit_font_type, m_limit_color, m_bg_color, m_value_align_type);
 
 	//show value
 	m_value_rect.m_left = rect.m_left + 50;
 	m_value_rect.m_top = rect.m_top +(height - (m_value_font_type->height)) / 2;
 
-	c_word::value_2_string(m_value, m_limit_dot_position, m_value_in_str, sizeof(m_value_in_str));
+	value_2_string(m_value, m_limit_dot_position, m_value_in_str, sizeof(m_value_in_str));
 	int strWidth, strHeight;
 	c_word::get_str_size(m_value_in_str, m_value_font_type, strWidth, strHeight);
 
@@ -116,4 +102,27 @@ void c_value_ctrl::on_paint(void)
 	m_value_rect.m_bottom = m_value_rect.m_top + (m_value_font_type->height);
 
 	c_word::draw_string_in_rect(m_surface, m_z_order, m_value_in_str, m_value_rect, m_value_font_type, m_name_color, m_bg_color, m_value_align_type);
+}
+
+void c_value_ctrl::value_2_string(int value, int dot_position, char* buf, int len)
+{
+	memset(buf, 0, len);
+	switch (dot_position)
+	{
+	case 0:
+		sprintf(buf, "%d", value);
+		break;
+	case 1:
+		sprintf(buf, "%.1f", value * 1.0 / 10);
+		break;
+	case 2:
+		sprintf(buf, "%.2f", value * 1.0 / 100);
+		break;
+	case 3:
+		sprintf(buf, "%.3f", value * 1.0 / 1000);
+		break;
+	default:
+		ASSERT(false);
+		break;
+	}
 }

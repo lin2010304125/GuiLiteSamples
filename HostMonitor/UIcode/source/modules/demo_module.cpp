@@ -1,9 +1,3 @@
-#include "../core_include/api.h"
-#include "../core_include/msg.h"
-#include "../core_include/audio.h"
-#include "../core_include/resource.h"
-#include "../include/msg_id.h"
-#include "../core_include/cmd_target.h"
 #include "../source/manager/wave_manager.h"
 #include "../source/manager/value_manager.h"
 #include <string.h>
@@ -263,7 +257,7 @@ void c_demo_module::unpack_ecg()
 		
 		if (s_ecg_ii_data[sample_index] == 0xA2)
 		{
-			c_audio::play(AUDIO_HEART_BEAT);
+			//c_audio::play(AUDIO_HEART_BEAT);
 		}
 
 		sample_index++;

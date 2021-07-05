@@ -1,14 +1,4 @@
-#include "../core_include/api.h"
-#include "../core_include/rect.h"
-#include "../core_include/cmd_target.h"
-#include "../core_include/wnd.h"
-#include "../core_include/surface.h"
-#include "../core_include/resource.h"
-#include "../core_include/word.h"
-#include "../core_include/bitmap.h"
-#include "../core_include/theme.h"
-#include "../widgets_include/wave_buffer.h"
-#include "../widgets_include/wave_ctrl.h"
+#include "../include/GuiLite.h"
 #include "wave_ctrl_ex.h"
 #include <string.h>
 #include <stdio.h>
@@ -54,8 +44,8 @@ void c_ecg_wave_ctrl::draw_grid()
 	c_rect rect;
 	get_screen_rect(rect);
 	
-	int row_cnt = rect.Height() / GRID_UNIT;
-	int col_cnt = rect.Width() / GRID_UNIT;
+	int row_cnt = rect.height() / GRID_UNIT;
+	int col_cnt = rect.width() / GRID_UNIT;
 
 	int left = rect.m_left + 2 * GRID_UNIT;
 	int right = (rect.m_left + (col_cnt - 1) * GRID_UNIT);
@@ -80,12 +70,12 @@ void c_bitmap_wave_ctrl::on_paint()
 	get_screen_rect(rect);
 
 	m_surface->fill_rect(rect.m_left, rect.m_top, rect.m_right, rect.m_bottom, m_back_color, m_z_order);
-	c_bitmap::draw_bitmap(m_surface, m_z_order, c_theme::get_bmp(m_bitmap_type), rect.m_left, rect.m_top);
+	c_image::draw_image(m_surface, m_z_order, c_theme::get_image(m_bitmap_type), rect.m_left, rect.m_top);
 
 	//show name
-	c_word::draw_string(m_surface, m_z_order, m_wave_name, m_wave_left + 10, rect.m_top, m_wave_name_font, m_wave_name_color, GL_ARGB(0, 0, 0, 0), ALIGN_LEFT);
+	c_word::draw_string(m_surface, m_z_order, m_wave_name, m_wave_left + 10, rect.m_top, m_wave_name_font, m_wave_name_color, GL_ARGB(0, 0, 0, 0));
 	//show unit
-	c_word::draw_string(m_surface, m_z_order, m_wave_unit, m_wave_left + 60, rect.m_top, m_wave_unit_font, m_wave_unit_color, GL_ARGB(0, 0, 0, 0), ALIGN_LEFT);
+	c_word::draw_string(m_surface, m_z_order, m_wave_unit, m_wave_left + 60, rect.m_top, m_wave_unit_font, m_wave_unit_color, GL_ARGB(0, 0, 0, 0));
 
 	save_background();
 }

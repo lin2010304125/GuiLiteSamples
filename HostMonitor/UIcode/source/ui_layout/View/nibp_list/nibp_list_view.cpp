@@ -1,10 +1,4 @@
-#include "../core_include/api.h"
-#include "../core_include/rect.h"
-#include "../core_include/cmd_target.h"
-#include "../core_include/wnd.h"
-#include "../widgets_include/table.h"
-#include "../core_include/theme.h"
-
+#include "../include/GuiLite.h"
 #include "../include/ctrl_id.h"
 #include "../source/ui_ctrl_ex/value_view.h"
 
@@ -16,21 +10,21 @@ void c_nibplist_view::on_init_children(void)
 	this->get_screen_rect(rect);
 
     c_table *p_table = (c_table*)get_wnd_ptr(ID_NIBP_LIST_VIEW_TABLE);
-	if (p_table == NULL)
+	if (p_table == 0)
 	{
-		ASSERT(FALSE);
+		ASSERT(false);
 		return;
 	}
 
 	p_table->set_font_color(GL_RGB(255,255,255));
 	p_table->set_bg_color(GL_RGB(0,0,0));
 
-	int total_height = rect.Height();
-	int total_width = rect.Width()-4;
+	int total_height = rect.height();
+	int total_width = rect.width()-4;
 	m_table_colnum = 3;
 	int col_width = total_width/(m_table_colnum+3);
 
-	p_table->set_font_type(c_theme::get_font(FONT_DEFAULT));
+	p_table->set_font_type((const LATTICE_FONT_INFO*)c_theme::get_font(FONT_DEFAULT));
 	int row_height = 26;
 
 	m_table_rownum = total_height / row_height;
@@ -47,9 +41,9 @@ void c_nibplist_view::on_init_children(void)
 void c_nibplist_view::on_paint()
 {
 	c_table *p_table = (c_table*)get_wnd_ptr(ID_NIBP_LIST_VIEW_TABLE);
-	if (p_table == NULL)
+	if (p_table == 0)
 	{
-		ASSERT(FALSE);
+		ASSERT(false);
 		return;
 	}
 

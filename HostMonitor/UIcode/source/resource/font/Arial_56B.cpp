@@ -1,4 +1,4 @@
-#include "../core_include/resource.h"
+#include "../include/GuiLite.h"
 
 static const unsigned char _32[] = {
 0, 255, 0, 255, 0, 218, };
@@ -59,8 +59,8 @@ static  LATTICE lattice_array[] = {
         {63, 29, _63},
         {95, 27, _95},
 };
-extern const FONT_INFO Arial_56B;
-const FONT_INFO Arial_56B ={
+extern const LATTICE_FONT_INFO Arial_56B;
+const LATTICE_FONT_INFO Arial_56B ={
     56,
     19,
     lattice_array

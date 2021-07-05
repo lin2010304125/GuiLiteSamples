@@ -1,6 +1,4 @@
-#include "../core_include/resource.h"
-#include "../core_include/theme.h"
-#include "../widgets_include/wave_buffer.h"
+#include "../include/GuiLite.h"
 
 #ifndef _WAVE_MANAGE_H_
 #define _WAVE_MANAGE_H_
@@ -25,16 +23,15 @@ typedef enum
 	WAVE_TYPE_MAX
 }WAVE_TYPE;
 
-typedef struct struct_font_info	FONT_INFO;
-typedef const FONT_INFO* (*PTR_FUNC_GET_FONT)();
+typedef const LATTICE_FONT_INFO* (*PTR_FUNC_GET_FONT)();
 typedef struct struct_wave_ctrl_discpritor
 {
 	unsigned char  	wave_id;
 	char* 			wave_name;
 	char* 			wave_unit;
 
-	FONT_TYPE		wave_name_font_type;
-	FONT_TYPE		wave_unit_font_type;
+	FONT_LIST		wave_name_font_type;
+	FONT_LIST		wave_unit_font_type;
 
 	unsigned int	wave_name_color;
 	unsigned int 	wave_unit_color;
@@ -46,7 +43,7 @@ typedef struct struct_wave_ctrl_discpritor
 }WAVE_CTRL_DISCPRITOR;
 
 class c_wave_ctrl;
-class c_wave_manage : public c_cmd_target
+class c_wave_manage
 {
 public:
 	int register_wave_ctrl(WAVE_TYPE wave_ctrl_type, c_wave_ctrl* p_wave);
@@ -61,11 +58,7 @@ public:
 private:
 	c_wave_buffer	m_waves[WAVE_TYPE_MAX];
     c_wave_ctrl* 	m_wave_ctrls[WAVE_TYPE_MAX][WAVE_CTRL_MAX];
-
 	c_wave_manage();
-	c_wave_manage(const c_wave_manage&);
-	c_wave_manage& operator=(const c_wave_manage&);
-	~c_wave_manage(){}
 };
 
 #endif

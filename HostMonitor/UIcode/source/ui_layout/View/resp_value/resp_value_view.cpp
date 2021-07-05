@@ -1,7 +1,4 @@
-#include "../core_include/api.h"
-#include "../core_include/rect.h"
-#include "../core_include/cmd_target.h"
-#include "../core_include/wnd.h"
+#include "../include/GuiLite.h"
 #include "../source/ui_ctrl_ex/value_ctrl.h"
 #include "../source/ui_ctrl_ex/value_view.h"
 #include "../include/ctrl_id.h"
@@ -13,7 +10,7 @@
 void c_resp_value_view::on_init_children(void)
 {
 	c_value_ctrl *p_rr = (c_value_ctrl*)get_wnd_ptr(ID_RESP_VIEW_RR_VALUE);
-	if (p_rr == NULL)
+	if (p_rr == 0)
 	{
 		ASSERT(false);
 		return;
